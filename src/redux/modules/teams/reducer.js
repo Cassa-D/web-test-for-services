@@ -12,6 +12,7 @@ const defaultStatus = [
 const reducer = (state = defaultStatus, action) => {
     switch (action.type) {
         case CREATENEWTEAM:
+            console.log(action.payload.team)
             return [...state, action.payload.team]
         default:
             return state

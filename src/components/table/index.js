@@ -17,30 +17,32 @@ const Table = ({
 
     return (
         <StyledTable>
-            <StyledRowTitle>
-                {titles.map((currTitle, index) => (
-                    <StyledCell key={index}>{currTitle.title}</StyledCell>
-                    ))}
-            </StyledRowTitle>
-            {list && list
-                .map((currItem, itemIndex) => (
-                    <StyledRow key={itemIndex} onClick={() => !goToPage || history.push(`${goToPage}/${itemIndex + 1}`)}>
-                        {titles.map((currTitle, index) => (
-                            <StyledCell key={index}>
-                                {!(currTitle.dataIndex === "score") ? currItem[currTitle.dataIndex] : 
-                                <ScoreInput onInputScoreChange={onInputScoreChange} currItem={currItem} tableTeams={tableTeams} />}
-                            </StyledCell>
+            <div>
+                <StyledRowTitle>
+                    {titles.map((currTitle, index) => (
+                        <StyledCell key={index}>{currTitle.title}</StyledCell>
                         ))}
-                    </StyledRow>
-                ))}
-            <StyledAddCell onClick={onNewRow}>
-                <span className="icon">
-                    <BsPlusCircle />
-                </span>
-                <div className="description">
-                    {buttonText}
-                </div>
-            </StyledAddCell>
+                </StyledRowTitle>
+                {list && list
+                    .map((currItem, itemIndex) => (
+                        <StyledRow key={itemIndex} onClick={() => !goToPage || history.push(`${goToPage}/${itemIndex + 1}`)}>
+                            {titles.map((currTitle, index) => (
+                                <StyledCell key={index}>
+                                    {!(currTitle.dataIndex === "score") ? currItem[currTitle.dataIndex] : 
+                                    <ScoreInput onInputScoreChange={onInputScoreChange} currItem={currItem} tableTeams={tableTeams} />}
+                                </StyledCell>
+                            ))}
+                        </StyledRow>
+                    ))}
+                <StyledAddCell onClick={onNewRow}>
+                    <span className="icon">
+                        <BsPlusCircle />
+                    </span>
+                    <div className="description">
+                        {buttonText}
+                    </div>
+                    </StyledAddCell>
+            </div>
         </StyledTable>
     )
 }
