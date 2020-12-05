@@ -1,0 +1,5 @@
+{
+    "html.format.wrapLineLength": 0,
+    "debug.console.wordWrap": false,
+    "editor.wordWrapColumn": 200
+}
