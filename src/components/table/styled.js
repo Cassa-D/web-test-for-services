@@ -60,7 +60,7 @@ export const StyledCell = styled.div`
 
     background-color: #ccc;
 
-    min-width: 196px;
+    min-width: 139px;
 
     width: calc(33% - 30px);
 `
@@ -71,6 +71,8 @@ export const StyledAddCell = styled.button`
 
     margin: 0 10px;
     min-width: 678px;
+
+    width: calc(100% - 20px);
 
     border-style: none;
 
@@ -96,6 +98,6 @@ export const StyledAddCell = styled.button`
     .description {
         display: inline-block;
 
-        margin: 0 20px;
+        margin: 4px 20px;
     }
 `

@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import FormCreate from "../../components/form-create"
 import Table from "../../components/table"
 
 import { modifyScoreFromTeam } from "../../redux/modules/tables/actions"
-import { createNewTeam } from "../../redux/modules/teams/actions"
-
 
 const tableTitles = [
     {
@@ -27,87 +24,43 @@ const tableTitles = [
     }
 ]
 
-const TableTeams = ({ showScore = false, tableTeams, tableIndex }) => {
+const TableTeams = ({ showScore = false, tableTeams, tableIndex, children, onNewRow, buttonText }) => {
     const dispatch = useDispatch()
 
     const teamsList = useSelector((store) => store.teams)
-    const [teamsListSorted, setTeamsListSorted] = useState([])
-
-    const [showModal, setShowModal] = useState(false)
-    const [data, setData] = useState({})
-
-    const inputs = [
-        {
-            type: "text",
-            name: "teamName",
-            placeholder: "Nome do time",
-            validate: (value) => {
-                setData({ ...data, teamName: value })
-                if (!value) return "Por favor informe um nome para o novo time!"
-                if (value.length < 3)
-                    return "Favor informar um nome adequado! (quantidade minima de caracteres: 5)"
-            }
-        },
-        {
-            type: "text",
-            name: "player1",
-            placeholder: "Nome do jogador 1",
-            validate: (value) => {
-                setData({ ...data, player1: value })
-                if (!value) return "Por favor informe o nome do primeiro jogador!"
-                if (value.length < 3)
-                    return "Favor informar um nome adequado! (quantidade minima de caracteres: 3)"
-            }
-        },
-        {
-            type: "text",
-            name: "player2",
-            placeholder: "Nome do jogador 2",
-            validate: (value) => {
-                setData({ ...data, player2: value })
-                if (!value) return "Por favor informe o nome do segundo jogador!"
-                if (value.length < 3)
-                    return "Favor informar um nome adequado! (quantidade minima de caracteres: 3)"
-            }
-        }
-    ]
+    const [teamsListSorted, setTeamsListSorted] = useState(teamsList)
 
     useEffect(() => {
         if (tableTeams) {
-            let sorted = [...teamsList].sort((currItem, nextItem) => tableTeams.find((currTableTeam) => currTableTeam.teamName === nextItem.teamName).points - tableTeams.find((currTableTeam) => currTableTeam.teamName === currItem.teamName).points)
-
-            setTeamsListSorted(sorted)
-        } else {
-            setTeamsListSorted(teamsList)
+            let filtered = teamsList
+                .filter((currTeam) => tableTeams
+                    .find((currTableTeam) => currTeam.teamName === currTableTeam.teamName))
+        
+            filtered
+                .sort((currItem, nextItem) => tableTeams
+                    .find((currTableTeam) => currTableTeam.teamName === nextItem.teamName).points - tableTeams
+                        .find((currTableTeam) => currTableTeam.teamName === currItem.teamName).points)
+            
+            setTeamsListSorted(filtered)
         }
-    }, [teamsList, tableTeams])
+    }, [tableTeams, teamsList])
 
-    const onSubmit = (values) => {
-        dispatch(createNewTeam(values))
-        setData({})
-        setShowModal(false)
-    }
+    console.log(teamsList)
 
     return (
         <>
             <Table
                 list={teamsListSorted}
                 titles={tableTitles.filter((currTitle) => showScore || currTitle.dataIndex !== "score")}
-                buttonText="Criar novo time"
-                onNewRow={() => setShowModal(true)}
+                buttonText={buttonText}
+                onNewRow={onNewRow}
                 tableTeams={tableTeams}
                 onInputScoreChange={(value, team) => {
                     let modifyTeamIndex = teamsList.findIndex((currTeam) => JSON.stringify(currTeam) === JSON.stringify(team))
                     dispatch(modifyScoreFromTeam(Number(value), modifyTeamIndex, tableIndex))
                 }}
                 />
-            <FormCreate
-                inputs={inputs}
-                data={{ data, setData }}
-                onSubmit={onSubmit}
-                show={{ showModal, setShowModal }}
-                title="Criar um novo Time!"
-            />
+            {children}
         </>
     )
 }

@@ -27,7 +27,7 @@ const Table = ({
                     .map((currItem, itemIndex) => (
                         <StyledRow key={itemIndex} onClick={() => !goToPage || history.push(`${goToPage}/${itemIndex + 1}`)}>
                             {titles.map((currTitle, index) => (
-                                <StyledCell key={index}>
+                                <StyledCell key={index} len={titles.length}>
                                     {!(currTitle.dataIndex === "score") ? currItem[currTitle.dataIndex] : 
                                     <ScoreInput onInputScoreChange={onInputScoreChange} currItem={currItem} tableTeams={tableTeams} />}
                                 </StyledCell>
@@ -41,7 +41,7 @@ const Table = ({
                     <div className="description">
                         {buttonText}
                     </div>
-                    </StyledAddCell>
+                </StyledAddCell>
             </div>
         </StyledTable>
     )

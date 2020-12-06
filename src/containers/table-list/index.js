@@ -57,7 +57,7 @@ const TableList = () => {
             name: "tableScore",
             placeholder: "Pontuação para vitória",
             validate: (value) => {
-                setData({ ...data, tableScore: value })
+                setData({ ...data, tableScore: Number(value) })
                 if (!value) return "Por favor informe a pontuação!"
             }
         },
@@ -75,7 +75,7 @@ const TableList = () => {
     ]
 
     const onSubmit = (values) => {
-        dispatch(createNewTable(values))
+        dispatch(createNewTable({...values, tableScore: Number(values.tableScore)}))
         setData({})
         setShowModal(false)
     }

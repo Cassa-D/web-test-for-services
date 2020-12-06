@@ -1,4 +1,4 @@
-import { Switch, Route } from "react-router-dom"
+import { Switch, Route, Redirect } from "react-router-dom"
 import styled from "styled-components"
 
 import Home from "../pages/home"
@@ -11,8 +11,11 @@ const Router = () => {
                 <Route path="/table/:id">
                     <GameTable />
                 </Route>
-                <Route path="/">
+                <Route exact path="/">
                     <Home />
+                </Route>
+                <Route path="/">
+                    <Redirect to="/" />
                 </Route>
             </Switch>
         </StyledContainer>

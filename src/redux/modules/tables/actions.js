@@ -1,4 +1,4 @@
-import { CREATENEWTABLE, MODIFYSCOREFROMTEAM } from "./types"
+import { CREATENEWTABLE, MODIFYSCOREFROMTEAM, ADDNEWTEAMTOTABLE } from "./types"
 
 export const createNewTable = (table) => ({
     type: CREATENEWTABLE,
@@ -12,6 +12,14 @@ export const modifyScoreFromTeam = (newValue, teamIndex, tableIndex) => ({
     payload: {
         newValue,
         teamIndex,
+        tableIndex
+    }
+})
+
+export const addNewTeamToTable = (teamName, tableIndex) => ({
+    type: ADDNEWTEAMTOTABLE,
+    payload: {
+        teamName,
         tableIndex
     }
 })

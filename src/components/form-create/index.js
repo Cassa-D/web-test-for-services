@@ -31,6 +31,7 @@ const FormCreate = ({ inputs, data: { data, setData }, onSubmit, show: { showMod
                                             id={name}
                                             placeholder={placeholder}
                                             value={data[name]}
+                                            defaultValue={data[name]}
                                             onChange={handleInputChange}
                                             ref={register({ validate })}
                                         />
