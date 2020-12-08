@@ -2,8 +2,8 @@ import { useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 
 import Table from "../../components/table"
-import Cell from "../../components/table-components/cell"
-import Row from "../../components/table-components/row"
+import Cell from "../../components/cell"
+import Row from "../../components/row"
 
 
 const tableTitles = [

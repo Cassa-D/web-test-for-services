@@ -4,8 +4,8 @@ import { useSelector } from "react-redux"
 import Table from "../../components/table"
 import ScoreInput from "../../components/score-input"
 
-import Row from "../../components/table-components/row"
-import Cell from "../../components/table-components/cell"
+import Row from "../../components/row"
+import Cell from "../../components/cell"
 
 const tableTitles = [
     {
@@ -72,18 +72,19 @@ const TableTeams = ({
             {teamsListSorted
                 .map((currItem, itemIndex) => (
                     <Row key={itemIndex}>
-                        {tableTitles.map((currTitle, index) => (
-                            <Cell key={index}>
-                                {!(currTitle.dataIndex === "score" && showScore) ?
-                                    currItem[currTitle.dataIndex] :
+                        {tableTitles.map((currTitle, index) => 
+                                currTitle.dataIndex !== "score" ?
+                                (<Cell key={index}>{currItem[currTitle.dataIndex]}</Cell>) :
+                                showScore &&
+                                (<Cell key={index}>
                                     <ScoreInput
-                                        onInputScoreChange={handleInputScoreChange}
-                                        currItem={currItem}
-                                        tableTeams={tableTeams}
-                                        max={max}
-                                    />}
-                            </Cell>
-                        ))}
+                                    onInputScoreChange={handleInputScoreChange}
+                                    currItem={currItem}
+                                    tableTeams={tableTeams}
+                                    max={max}
+                                    />
+                                </Cell>)
+                        )}
                     </Row>
                 ))}
             {children}

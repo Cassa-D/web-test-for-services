@@ -8,7 +8,6 @@ const Input = ({
     handleOnChange,
     refRegister
 }) => {
-
     const onChange = ({ target: { value, name } }) => {
         handleOnChange(value, name)
     }
@@ -19,7 +18,6 @@ const Input = ({
                 {!(type === "textarea") ?
                     <input
                         type={type}
-                        defaultValue=""
                         name={name}
                         placeholder={placeholder}
                         onChange={onChange}
@@ -28,7 +26,6 @@ const Input = ({
                     : (type === "textarea") &&
                     <textarea
                         rows={5}
-                        defaultValue=""
                         name={name}
                         placeholder={placeholder}
                         onChange={onChange}

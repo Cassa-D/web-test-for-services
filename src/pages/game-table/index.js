@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { useParams, useHistory } from "react-router-dom"
+import { useParams, useHistory, Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 
 import TableTeams from "../../containers/table-teams"
@@ -73,7 +73,7 @@ const GameTable = () => {
                     <TableTeams
                         showScore
                         tableTeams={tableTeams}
-                        onNewRow={() => indexTeamWin < 0 && setShow(!show)}
+                        onNewRow={() => indexTeamWin < 0 && table.teams.length < 10 && setShow(!show)}
                         buttonText={
                             <Dropdown show={show} title={"Adicionar time na tabela"}>
                                 {getTeamsInTable()
@@ -106,7 +106,7 @@ const GameTable = () => {
     catch {
         return (
             <>
-                Loading... Se demorar muito volte para a home: <a href="http://localhost:3000/">por aqui</a>
+                Loading... Se demorar muito volte para a <Link to="/">home</Link>!
             </>
         )
     }
