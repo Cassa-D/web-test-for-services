@@ -3,70 +3,51 @@ import { useDispatch } from "react-redux"
 
 import TableList from "../../containers/table-list"
 import TableTeams from "../../containers/table-teams"
-import FormCreate from "../../components/form-create"
 
-import { createNewTeam } from "../../redux/modules/teams/actions"
+import Modal from "../../components/modal"
+import Form from "../../components/form"
+
+import { createNewTeamThunk } from "../../redux/modules/teams/thunks"
+import { createTable } from "../../redux/modules/tables/thunks"
+
+import { tableInputs, teamInputs } from "./helper"
 
 const Home = () => {
     const dispatch = useDispatch()
-    const [showModal, setShowModal] = useState(false)
-    const [data, setData] = useState({})
+    const [showModalTeams, setShowModalTeams] = useState(false)
+    const [showModalTables, setShowModalTables] = useState(false)
 
-    const inputs = [
-        {
-            type: "text",
-            name: "teamName",
-            placeholder: "Nome do time",
-            validate: (value) => {
-                setData({ ...data, teamName: value })
-                if (!value) return "Por favor informe um nome para o novo time!"
-                if (value.length < 3)
-                    return "Favor informar um nome adequado! (quantidade minima de caracteres: 5)"
-            }
-        },
-        {
-            type: "text",
-            name: "player1",
-            placeholder: "Nome do jogador 1",
-            validate: (value) => {
-                setData({ ...data, player1: value })
-                if (!value) return "Por favor informe o nome do primeiro jogador!"
-                if (value.length < 3)
-                    return "Favor informar um nome adequado! (quantidade minima de caracteres: 3)"
-            }
-        },
-        {
-            type: "text",
-            name: "player2",
-            placeholder: "Nome do jogador 2",
-            validate: (value) => {
-                setData({ ...data, player2: value })
-                if (!value) return "Por favor informe o nome do segundo jogador!"
-                if (value.length < 3)
-                    return "Favor informar um nome adequado! (quantidade minima de caracteres: 3)"
-            }
-        }
-    ]
+    const onSubmitFormTeams = (values) => {
+        dispatch(createNewTeamThunk(values))
+        setShowModalTeams(false)
+    }
 
-    const onSubmitForm = (values) => {
-        dispatch(createNewTeam(values))
-        setData({})
-        setShowModal(false)
+    const onSubmitFormTables = (values) => {
+        dispatch(createTable({ ...values, table_score: Number(values.table_score) }))
+        setShowModalTables(false)
     }
 
     return (
         <>
             <h1>Tabelas:</h1>
-            <TableList />
+            <TableList onNewRow={() => setShowModalTables(true)} buttonText={"Criar nova tabela"}>
+                <Modal show={showModalTables} setShow={setShowModalTables} title="Criar um nova Tabela!" >
+                    <Form
+                        inputs={tableInputs}
+                        onSubmit={onSubmitFormTables}
+                        show={{ showModalTables, setShowModalTables }}
+                    />
+                </Modal>
+            </TableList>
             <h1>Times:</h1>
-            <TableTeams onNewRow={() => setShowModal(true)} buttonText={"Criar novo time"}>
-                <FormCreate
-                    inputs={inputs}
-                    data={{ data, setData }}
-                    onSubmit={onSubmitForm}
-                    show={{ showModal, setShowModal }}
-                    title="Criar um novo Time!"
-                />
+            <TableTeams onNewRow={() => setShowModalTeams(true)} buttonText={"Criar novo time"}>
+                <Modal show={showModalTeams} setShow={setShowModalTeams} title="Criar um novo Time!" >
+                    <Form
+                        inputs={teamInputs}
+                        onSubmit={onSubmitFormTeams}
+                        show={{ showModalTeams, setShowModalTeams }}
+                    />
+                </Modal>
             </TableTeams>
         </>
     )

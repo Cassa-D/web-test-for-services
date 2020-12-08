@@ -1,10 +1,18 @@
 import styled from "styled-components"
 
-const Modal = ({ children, show }) => {
+const Modal = ({ children, show, setShow, title }) => {
     return (
         <StyledModal show={show}>
             <div className="container">
-                {children}
+                <section>
+                    <button onClick={() => setShow(false)}>Fechar</button>
+                </section>
+
+                <section>
+                    <h2>{title}</h2>
+
+                    {children}
+                </section>
             </div>
         </StyledModal>
     )

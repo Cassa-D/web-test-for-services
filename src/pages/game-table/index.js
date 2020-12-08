@@ -1,67 +1,116 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-import { useParams, Redirect, useHistory } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 
 import TableTeams from "../../containers/table-teams"
-import TeamsDropdown from "../../components/dropdown"
+import Dropdown from "../../components/dropdown"
 
-import { addNewTeamToTable } from "../../redux/modules/tables/actions"
+import Modal from "../../components/modal"
+
+import { addTeamToTable, listTables, modifyScore } from "../../redux/modules/tables/thunks"
 
 const GameTable = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
-    const id = Number(useParams().id) - 1
-    const table = useSelector((store) => store.tables[id]) || {}
-    const [teamsInTable, setTeamsInTable] = useState(table.teams)
-
+    const id = Number(useParams().id)
+    
+    const table = useSelector((store) => store.tables[id - 1])
+    const tableTeams = useSelector((store) =>
+        store.tables.length >= id && store.tables[id - 1].teams)
     const teams = useSelector((store) => store.teams)
-
+    
     const [show, setShow] = useState(false)
 
-    if (!table.name) {
-        return <Redirect to="/"/>
+    const indexTeamWin = useSelector((store) =>
+        store.tables.length >= id && store.tables[id - 1].team_win)
+
+    const [showModalWin, setShowModalWin] = useState(false)
+    
+    useEffect(() => {
+        dispatch(listTables())
+    }, [dispatch, indexTeamWin])
+
+    useEffect(() => {
+        let hasWin = indexTeamWin < 0
+
+        if (typeof indexTeamWin == "number")
+            setShowModalWin(!hasWin)
+    }, [table, indexTeamWin])
+    
+    const getTeamsInTable = () => {
+        return teams.filter((team) => !tableTeams.find((tableTeam) => tableTeam.id === team.id))
     }
 
-    return (
-        <>
-            <div>
-                <span onClick={() => history.push("/")}>{"< Voltar"}</span>
-            </div>
+    const handleOnChangeScore = (value, teamId) => {
+        if (indexTeamWin < 0) {
+            dispatch(modifyScore(Number(value), teamId, table.id))
+        }
+    }
 
-            <h1>Essa é a tabela {table.name}!</h1>
-
-            <div>
-                Regras:
+    try {
+        return (
+            <>
                 <div>
-                    {table.description}
+                    <button onClick={() => history.push("/")}>{"< Voltar"}</button>
                 </div>
-            </div>
 
-            <div>
-                Esses são os times desta tabela:
-                <TableTeams
-                    showScore
-                    tableTeams={teamsInTable}
-                    tableIndex={id}
-                    onNewRow={() => setShow(!show)}
-                    buttonText={
-                        <TeamsDropdown show={show}>
-                            {teams
-                                .filter((team) => !teamsInTable.find((tableTeam) => tableTeam.teamName === team.teamName))
-                                .map((team, i) => (
-                                    <div className="chose" key={i} onClick={() => {
-                                        dispatch(addNewTeamToTable(team.teamName, id))
-                                        setTeamsInTable([...teamsInTable, { teamName: team.teamName, points: 0 }])
-                                    }}>{team.teamName}</div>
-                                ))}
-                        </TeamsDropdown>
-                    }
-                />
-            </div>
-        </>
-    )
+                <h1>Essa é a tabela {table.name}!</h1>
+
+                <div>
+                    <h3>
+                        Regras:
+                    </h3>
+                    <p>
+                        {table.description}
+                    </p>
+                    <h4>Pontos necessários: <span>{table.table_score}</span></h4>
+                </div>
+
+                <div>
+                    Esses são os times desta tabela:
+                    <TableTeams
+                        showScore
+                        tableTeams={tableTeams}
+                        onNewRow={() => indexTeamWin < 0 && setShow(!show)}
+                        buttonText={
+                            <Dropdown show={show} title={"Adicionar time na tabela"}>
+                                {getTeamsInTable()
+                                    .map((team, i) => (
+                                        <div className="chose" key={i} onClick={() => {
+                                            dispatch(addTeamToTable(id, team.id))
+                                        }}>
+                                            {team.name}
+                                        </div>
+                                    ))}
+                            </Dropdown>
+                        }
+                        onChangeScore={handleOnChangeScore}
+                        max={indexTeamWin < 0 ? table.table_score : 0}
+                    />
+                </div>
+
+                <Modal
+                    show={showModalWin}
+                    setShow={setShowModalWin}
+                    title={(
+                        <>
+                            Time vitorioso: <span style={{ color:"green" }}>{indexTeamWin >= 0 && teams.find((team) => team.id === indexTeamWin).name}</span>!
+                        </>
+                    )}>
+                </Modal>
+            </>
+        )
+    }
+    catch {
+        return (
+            <>
+                Loading... Se demorar muito volte para a home: <a href="http://localhost:3000/">por aqui</a>
+            </>
+        )
+    }
+
 }
 
 export default GameTable

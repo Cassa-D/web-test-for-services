@@ -28,43 +28,6 @@ export const StyledTable = styled.div`
     }
 `
 
-export const StyledRow = styled.div`
-    display: flex;
-
-    box-sizing: border-box;
-
-    flex-flow: nowrap row;
-
-    margin: 0 10px;
-    min-width: 678px;
-
-    justify-content: space-between;
-`
-
-export const StyledRowTitle = styled(StyledRow)`
-    background-color: #aaa;
-    text-align: center;
-
-    border-radius: 5px 5px 0 0;
-
-    margin-top: 10px;
-
-    > div {
-        background-color: #aaa;
-    }
-`
-
-export const StyledCell = styled.div`
-    display: inline-block;
-    padding: 5px 15px;
-
-    background-color: #ccc;
-
-    min-width: 139px;
-
-    width: calc(33% - 30px);
-`
-
 export const StyledAddCell = styled.button`
     background-color: #aaa;
     padding: 5px 25px;

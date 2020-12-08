@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 
 import Table from "../../components/table"
+import ScoreInput from "../../components/score-input"
 
-import { modifyScoreFromTeam } from "../../redux/modules/tables/actions"
+import Row from "../../components/table-components/row"
+import Cell from "../../components/table-components/cell"
 
 const tableTitles = [
     {
         title: "Nome do time",
-        dataIndex: "teamName",
+        dataIndex: "name",
     },
     {
         title: "Jogador 1",
@@ -24,44 +26,68 @@ const tableTitles = [
     }
 ]
 
-const TableTeams = ({ showScore = false, tableTeams, tableIndex, children, onNewRow, buttonText }) => {
-    const dispatch = useDispatch()
+const TableTeams = ({
+    showScore,
+    tableTeams,
+    children,
+    onNewRow,
+    buttonText,
+    onChangeScore,
+    max
+}) => {
 
-    const teamsList = useSelector((store) => store.teams)
-    const [teamsListSorted, setTeamsListSorted] = useState(teamsList)
+    const teams = useSelector((state) => state.teams)
+    const [teamsListSorted, setTeamsListSorted] = useState([])
 
     useEffect(() => {
         if (tableTeams) {
-            let filtered = teamsList
-                .filter((currTeam) => tableTeams
-                    .find((currTableTeam) => currTeam.teamName === currTableTeam.teamName))
-        
-            filtered
-                .sort((currItem, nextItem) => tableTeams
-                    .find((currTableTeam) => currTableTeam.teamName === nextItem.teamName).points - tableTeams
-                        .find((currTableTeam) => currTableTeam.teamName === currItem.teamName).points)
+            let filtered = teams.filter((currTeam) =>
+                tableTeams.find((currTableTeam) => currTeam.id === currTableTeam.id))
             
+            filtered.sort((currItem, nextItem) => {
+                let teamA = tableTeams.find((currTableTeam) => currTableTeam.id === nextItem.id).score
+                let teamB = tableTeams.find((currTableTeam) => currTableTeam.id === currItem.id).score
+
+                return teamA - teamB
+            })
+
             setTeamsListSorted(filtered)
+        } else {
+            setTeamsListSorted(teams)
         }
-    }, [tableTeams, teamsList])
+    }, [tableTeams, teams])
 
-    console.log(teamsList)
-
+    const handleInputScoreChange = (value, team) =>
+        onChangeScore(value, team.id)
+    
     return (
-        <>
-            <Table
-                list={teamsListSorted}
-                titles={tableTitles.filter((currTitle) => showScore || currTitle.dataIndex !== "score")}
-                buttonText={buttonText}
-                onNewRow={onNewRow}
-                tableTeams={tableTeams}
-                onInputScoreChange={(value, team) => {
-                    let modifyTeamIndex = teamsList.findIndex((currTeam) => JSON.stringify(currTeam) === JSON.stringify(team))
-                    dispatch(modifyScoreFromTeam(Number(value), modifyTeamIndex, tableIndex))
-                }}
-                />
+        <Table buttonText={buttonText} onNewRow={onNewRow}>
+            <Row.Title>
+                {tableTitles
+                    .filter((currTitle) => showScore || currTitle.dataIndex !== "score")
+                    .map((currTitle, index) =>
+                        <Cell key={index}>{currTitle.title}</Cell>)}
+            </Row.Title>
+
+            {teamsListSorted
+                .map((currItem, itemIndex) => (
+                    <Row key={itemIndex}>
+                        {tableTitles.map((currTitle, index) => (
+                            <Cell key={index}>
+                                {!(currTitle.dataIndex === "score" && showScore) ?
+                                    currItem[currTitle.dataIndex] :
+                                    <ScoreInput
+                                        onInputScoreChange={handleInputScoreChange}
+                                        currItem={currItem}
+                                        tableTeams={tableTeams}
+                                        max={max}
+                                    />}
+                            </Cell>
+                        ))}
+                    </Row>
+                ))}
             {children}
-        </>
+        </Table>
     )
 }
 

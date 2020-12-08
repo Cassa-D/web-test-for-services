@@ -1,4 +1,11 @@
-import { CREATENEWTABLE, MODIFYSCOREFROMTEAM, ADDNEWTEAMTOTABLE } from "./types"
+import { LISTALLTABLES, CREATENEWTABLE, MODIFYSCOREFROMTEAM, ADDNEWTEAMTOTABLE, TEAMHAVEWIN } from "./types"
+
+export const listAllTables = (tables) => ({
+    type: LISTALLTABLES,
+    payload: {
+        tables
+    }
+})
 
 export const createNewTable = (table) => ({
     type: CREATENEWTABLE,
@@ -7,19 +14,26 @@ export const createNewTable = (table) => ({
     }
 })
 
-export const modifyScoreFromTeam = (newValue, teamIndex, tableIndex) => ({
+export const modifyScoreFromTeam = (newValue, teamId, tableIndex) => ({
     type: MODIFYSCOREFROMTEAM,
     payload: {
         newValue,
-        teamIndex,
+        teamId,
         tableIndex
     }
 })
 
-export const addNewTeamToTable = (teamName, tableIndex) => ({
+export const addNewTeamToTable = (teams, tableId) => ({
     type: ADDNEWTEAMTOTABLE,
     payload: {
-        teamName,
-        tableIndex
+        teams,
+        tableId
+    }
+})
+
+export const teamHaveWin = (tableWithWin) => ({
+    type: TEAMHAVEWIN,
+    payload: {
+        tableWithWin
     }
 })

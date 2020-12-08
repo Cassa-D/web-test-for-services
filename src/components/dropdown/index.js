@@ -1,11 +1,11 @@
 import { StyledDropdown } from "./styled"
 
-const Dropdown = ({ show, children }) => {
+const Dropdown = ({ show, children, title }) => {
     return (
         <StyledDropdown show={show}>
-            <div class="dropdown">
-                <div class="dropbtn">Dropdown</div>
-                <div class="dropdown-content">
+            <div className="dropdown">
+                <div className="dropbtn">{title}</div>
+                <div className="dropdown-content">
                     {children}
                 </div>
             </div> 

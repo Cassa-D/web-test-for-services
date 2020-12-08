@@ -1,19 +1,15 @@
-import { CREATENEWTEAM } from "./types"
+import { CREATENEWTEAM, LISTALLTEAMS } from "./types"
 
-const defaultStatus = [
-    {
-        teamName: "Os topzera piá", player1: "João Cleber", player2: "Cresdineu Araujo"
-    },
-    {
-        teamName: "Os grandes velhos", player1: "Januário José", player2: "Luiz Gonzaga"
-    }
-]
+const defaultState = []
 
-const reducer = (state = defaultStatus, action) => {
+const reducer = (state = defaultState, action) => {
     switch (action.type) {
         case CREATENEWTEAM:
-            console.log(action.payload.team)
-            return [...state, action.payload.team]
+            const { team } = action.payload
+            return [...state, team]
+        case LISTALLTEAMS:
+            const { teams } = action.payload
+            return [...teams]
         default:
             return state
     }
