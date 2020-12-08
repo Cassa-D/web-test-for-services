@@ -34,3 +34,8 @@ Regras:
 1. Exibir a descrição das regras de pontuação da tabela
 2. Ao listar os times vinculado a tabela ordenar por qual tem maior pontuação
 3. Quando um time atingir a pontuação da tabela mostrar um alerta em verde com o nome do time vencedor
+
+# Utilitários
+
+[repositório back-end](https://github.com/Cassa-D/api-services-test)
+[link to api](https://api-to-services.herokuapp.com/tables)
